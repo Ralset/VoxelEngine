@@ -6,7 +6,7 @@
             "generator": "MinGW Makefiles",
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "C:/mysys64/mingw64"
+                "CMAKE_PREFIX_PATH": "C:/mysys64/ucrt64"
             }
         },
         {
