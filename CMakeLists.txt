@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(VoxelEngine
     external/glad/src/glad.c
     src/main.cpp
+    src/core/Window.cpp
 )
 
 target_include_directories(VoxelEngine PRIVATE
