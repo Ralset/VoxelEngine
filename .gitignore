@@ -1,0 +1,9 @@
+build/
+*.exe
+*.o
+*.a
+.DS_Store
+Thumbs.db
+.vscode/settings.json
+.vscode/launch.json
+.vscode/c_cpp_properties.json
