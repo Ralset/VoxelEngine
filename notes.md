@@ -10,7 +10,8 @@ Od biblioteka:
 GLFW, GLAD, GLM
 
 ## Resursi
-https://learnopengl.com
+https://learnopengl.com/
+https://docs.gl/
 
 ## Pre projekta
 Ono sto znam za OpenGL je da je to konfiguracija.
@@ -34,3 +35,9 @@ player skripta za igraca/kameru
 world u njemu ce se nalaziti vecina stvari kao chunkovi blokovi svet...
 
 ------------------------------
+
+## 29.4.2026.
+Napravio sam Window klasu koja se brine oko kreacije ekrana.
+Problem je bio da sam stvaio da mi pointer na glfwwindow bude private, ali napravio funkciju koja bukvalno daje pristup tome.
+Promenio sam kod tako da sada imam funkcije koje daju pristup nekih od funkcionalnosti za window koje su potrebne (encapsulation).
+Jedino sto sam za sada ostavio u konstruktoru sto mozda ne treba tu da bude jeste windowhints za opengl verziju i profil. Jer se ti hintovi koriste globalno ali lepse izgleda ako su deo klase za window kreaiju umesto da ih stavim u main.
