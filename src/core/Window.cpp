@@ -1,13 +1,11 @@
 #include "core/Window.h"
-#include <iostream>
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <stdexcept>
 
 Window::Window(int width, int height, const char* title) : m_width(width), m_height(height)
-{
-    if (!glfwInit()){
-        std::cerr<<"ERROR in initializing glfw"<<std::endl;
-        return;
-    }
-    
+{    
     // Setuju minimalnu opengl verziju, ako je nema onda ce window automatski failovati da se napravi
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -17,29 +15,26 @@ Window::Window(int width, int height, const char* title) : m_width(width), m_hei
     #endif
     
     m_window = glfwCreateWindow(m_width, m_height, title, NULL, NULL);
-    if (!m_window)
-    {
-        glfwTerminate();
-        return;
+    if (!m_window){
+        throw std::runtime_error("Failed to create a window");
     }
 
     glfwMakeContextCurrent(m_window);
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        glfwTerminate();
-        return;
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
+        throw std::runtime_error("Failed to initialize GLAD");
     }
-
 }
 
-GLFWwindow* Window::get_window() {
-    return m_window;
+bool Window::shouldWindowClose(){
+    return glfwWindowShouldClose(m_window);
+}
+
+void Window::swapBuffers(){
+    glfwSwapBuffers(m_window);
 }
 
 Window::~Window()
 {
     glfwDestroyWindow(m_window);
-    glfwTerminate();
 }

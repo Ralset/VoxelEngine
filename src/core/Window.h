@@ -1,13 +1,13 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+struct GLFWwindow;
 
 class Window {
     public:
         Window(int width, int height, const char* title);
         ~Window();
-        GLFWwindow* get_window();
+        void swapBuffers();
+        bool shouldWindowClose();
 
     private:
         GLFWwindow* m_window;
