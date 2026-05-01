@@ -49,3 +49,14 @@ Klasa treba da sadrzi i brine samo o svojim resursima - ne treba nista globalno 
 Encapsulation razmisljanje - prvo sve stavi privatno a posle toga daj public funkcije koje daju pristup samo onome sto je potrebno iz te klase. Ako je sve potrebno onda tek premestiti u public
 
 ------------------------------
+
+## Dan 3 - 30.4.2026.
+Nista nisam radio osim pomerio shadere u drugi fajl
+
+------------------------------
+
+## Dan 4 - 1.5.2026.
+
+
+
+------------------------------

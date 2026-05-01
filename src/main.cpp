@@ -3,6 +3,20 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+
+static std::string ParseShader(const std::string& filepath)
+{
+    std::ifstream file(filepath);
+    if (!file.is_open()){
+        throw std::runtime_error("ERROR: Couldn't open " + filepath);
+    } 
+    std::stringstream buffer;
+    buffer<<file.rdbuf();
+    return buffer.str();
+}
 
 static unsigned int CompileShader(unsigned int type, const std::string& source)
 {
@@ -71,22 +85,9 @@ int main()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 
-    std::string vertexShader = 
-        "#version 330 core\n"
-        "layout(location = 0) in vec4 position;\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = position;\n"
-        "}\n";
+    std::string vertexShader=ParseShader("assets/shaders/Vertex.shader");
+    std::string fragmentShader=ParseShader("assets/shaders/Fragment.shader");
     
-    std::string fragmentShader = 
-        "#version 330 core\n"
-        "layout(location = 0) out vec4 color;\n"
-        "void main()\n"
-        "{\n"
-        "   color = vec4(1.0, 0.0, 0.0, 1.0);\n"
-        "}\n";
-
     unsigned int shader = CreateShader(vertexShader, fragmentShader);
     glUseProgram(shader);
 
