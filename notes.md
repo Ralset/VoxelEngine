@@ -56,7 +56,7 @@ Nista nisam radio osim pomerio shadere u drugi fajl
 ------------------------------
 
 ## Dan 4 - 1.5.2026.
-
-
+Dodao sam funkciju koja daje runtime error ako postoji neka greska i olaksava debuggovanje.
+Takodje sam implementirao da se crtaju vertexi preko indeksa
 
 ------------------------------
