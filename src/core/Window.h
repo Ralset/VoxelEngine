@@ -13,4 +13,5 @@ class Window {
         GLFWwindow* m_window;
         int m_width;
         int m_height;
+        static void resizeWindow(GLFWwindow* window, int width, int height);
 };

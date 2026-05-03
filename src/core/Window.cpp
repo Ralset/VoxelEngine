@@ -1,5 +1,4 @@
 #include "core/Window.h"
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stdexcept>
@@ -20,6 +19,7 @@ Window::Window(int width, int height, const char* title) : m_width(width), m_hei
     }
 
     glfwMakeContextCurrent(m_window);
+    glfwSetWindowUserPointer(m_window, this);
 
     // VSYNC
     glfwSwapInterval(1);
@@ -27,6 +27,9 @@ Window::Window(int width, int height, const char* title) : m_width(width), m_hei
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
         throw std::runtime_error("Failed to initialize GLAD");
     }
+
+    glViewport(0, 0, m_width, m_height);
+    glfwSetFramebufferSizeCallback(m_window, resizeWindow);
 }
 
 bool Window::shouldWindowClose(){
@@ -35,6 +38,14 @@ bool Window::shouldWindowClose(){
 
 void Window::swapBuffers(){
     glfwSwapBuffers(m_window);
+}
+
+void Window::resizeWindow(GLFWwindow* window, int width, int height)
+{
+    Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    self->m_width=width;
+    self->m_height=height;
+    glViewport(0, 0, self->m_width, self->m_height);
 }
 
 Window::~Window()

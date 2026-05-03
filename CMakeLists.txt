@@ -8,6 +8,7 @@ add_executable(VoxelEngine
     external/glad/src/glad.c
     src/main.cpp
     src/core/Window.cpp
+    src/graphics/Renderer.cpp
 )
 
 target_include_directories(VoxelEngine PRIVATE

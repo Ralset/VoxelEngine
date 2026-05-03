@@ -1,4 +1,5 @@
 #include "core/Window.h"
+#include "graphics/Renderer.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -8,21 +9,6 @@
 #include <string>
 #include <stdexcept>
 
-#define ASSERT(x) if(!(x)) throw std::runtime_error(std::string("Assert failed: ") + #x + " at line: " + std::to_string(__LINE__) + " at file: " + __FILE__);
-#define GLCall(x)\
-    GLClearError();\
-    x;\
-    GLLogCall(#x, __FILE__, __LINE__)
-
-static void GLClearError() {
-    while (glGetError() != GL_NO_ERROR);
-}
-
-static void GLLogCall(const char* function, const char* file, int line) {
-    while (GLenum error = glGetError()) {
-        throw std::runtime_error("OpenGL Error (" + std::to_string(error) + ") in " + function + " at " + file + ":" + std::to_string(line));
-    }
-}
 
 static std::string ParseShader(const std::string& filepath)
 {
