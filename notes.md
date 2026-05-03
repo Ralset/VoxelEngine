@@ -60,3 +60,16 @@ Dodao sam funkciju koja daje runtime error ako postoji neka greska i olaksava de
 Takodje sam implementirao da se crtaju vertexi preko indeksa
 
 ------------------------------
+
+## Dan 5 - 2.6.2026.
+Dodao sam nesto nmg da se setim ali nista posebno
+
+------------------------------
+
+## Dan 6 - 3.5.2026.
+Naucio sam sta je castovanje i koristim ga u window klasi jer parametri glfw funkcije za resize callback ne ukljucuju intancu moje klase i zato nisam mogao da referenciram tacnu instancu klase koja mi treba.
+Onda sam zakacio na instancu glfw prozora adresu moje instance klase tako da kada je dobijem kao callback u static funkciji mogu da iskoristim static_cast tako da ce kompajler da ga pretvori/odnosi prema tom pointeru kao da je tip moje klase i onda prepisem pointer na instancu tacne klase koja poseduje tu instancu glwf prozora.
+
+Beefovao sam sa chatgptom jer nije hteo da prizna da sam u pravu:
+Imamo Window klasu i njenu instancu. this je pointer (adresa) na tu instancu. Tu adresu prosledimo GLFW-u koji je sacuva u svom internom void* polju vezanom za GLFWwindow.
+Kasnije, u callback-u, iz GLFW-a trazimo tu sacuvanu adresu. GLFW nam vraca isti pointer koji smo ranije upisali. Mi ga smestamo u lokalni Window* self (ili ekvivalent), sto je nova lokalna promenljiva koja zauzima mesto u memoriji procesa.
