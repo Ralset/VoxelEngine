@@ -73,3 +73,13 @@ Onda sam zakacio na instancu glfw prozora adresu moje instance klase tako da kad
 Beefovao sam sa chatgptom jer nije hteo da prizna da sam u pravu:
 Imamo Window klasu i njenu instancu. this je pointer (adresa) na tu instancu. Tu adresu prosledimo GLFW-u koji je sacuva u svom internom void* polju vezanom za GLFWwindow.
 Kasnije, u callback-u, iz GLFW-a trazimo tu sacuvanu adresu. GLFW nam vraca isti pointer koji smo ranije upisali. Mi ga smestamo u lokalni Window* self (ili ekvivalent), sto je nova lokalna promenljiva koja zauzima mesto u memoriji procesa.
+
+
+Nastavak rada.
+Napravio sam input i application klasu.
+Application klasa je vlasnik window i input klase tako da onda sadrzi celu igricu.
+Imao sam problem u konstruktoru oko pravljenja prozora i inicijalizacije glfw.
+Zato sto glfw treba prvo da se inicijalizuje ja sam u konstruktoru to uradio pa sam napravio onda instancu window klase
+Ali posto nije automatksi napravljena ona dobije default (prazni) konstruktor koji sam dodao u window klasu.
+Doslo je do problema da kada zapocnem program odmah se pozove i destruktor te nove instance, zato sto se ta instanca napravi, kopira u moju vrednost unutar aplikacije, i brise sto poziva destruktor i invalidira vrednost koju smo kopirali.
+Resenje je koriscenje unique_ptr (unique pointera) i make_uniqe. Napravimo jednu instancu klase window na heapu i make unique nam vraca unique_ptr koji ga poseduje.

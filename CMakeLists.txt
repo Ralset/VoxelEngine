@@ -9,6 +9,8 @@ add_executable(VoxelEngine
     src/main.cpp
     src/core/Window.cpp
     src/graphics/Renderer.cpp
+    src/core/Input.cpp
+    src/core/Application.cpp
 )
 
 target_include_directories(VoxelEngine PRIVATE
