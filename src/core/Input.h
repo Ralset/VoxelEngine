@@ -3,7 +3,7 @@
 struct GLFWwindow;
 
 struct vec2 {
-    int x,y;
+    double x,y;
 };
 
 class Input{
@@ -15,6 +15,7 @@ class Input{
         bool isKeyHeld(int key) const;
         bool isKeyReleased(int key) const;
         void onKey(int key, int action);
+        void onCursorMove(double xpos, double ypos);
         vec2 mousePosition;
 
     private:

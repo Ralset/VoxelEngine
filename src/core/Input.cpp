@@ -18,6 +18,24 @@ void Input::update()
 
 void Input::onKey(int key, int action)
 {
-    std::cout<<"NASAO INPUT ZA "<<key<<std::endl;
+    if(action == GLFW_PRESS)m_currentKeys[key]=true;
+    else if(action == GLFW_RELEASE)m_currentKeys[key]=false;
     return;
+}
+
+void Input::onCursorMove(double xpos, double ypos)
+{
+    mousePosition = {xpos, ypos};
+}
+
+bool Input::isKeyHeld(int key) const{
+    return m_currentKeys[key] & m_previousKeys[key];
+}
+
+bool Input::isKeyPressed(int key) const{
+    return m_currentKeys[key] & (!m_previousKeys[key]);
+}
+
+bool Input::isKeyReleased(int key) const{
+    return (!m_currentKeys[key]) & m_previousKeys[key];
 }

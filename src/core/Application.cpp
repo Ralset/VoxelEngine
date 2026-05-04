@@ -71,6 +71,7 @@ Application::Application() {
     glfwSetWindowUserPointer(m_window->getWindow(), this);
     glfwSetFramebufferSizeCallback(m_window->getWindow(), resizeCallBack);
     glfwSetKeyCallback(m_window->getWindow(), keyCallBack);
+    glfwSetCursorPosCallback(m_window->getWindow(), cursorPosCallback);
 }
 
 Application::~Application() {
@@ -85,6 +86,11 @@ void Application::resizeCallBack(GLFWwindow* window, int width, int height){
 void Application::keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods){
     Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
     app->m_input.onKey(key, action);
+}
+
+void Application::cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
+    Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+    app->m_input.onCursorMove(xpos, ypos);
 }
 
 void Application::Run()
@@ -137,9 +143,10 @@ void Application::Run()
     float r = 0.0f;
     float increment = 0.05f;
 
-    while (!m_window->shouldWindowClose())
+    while (!m_window->shouldWindowClose()&&!m_input.isKeyPressed(GLFW_KEY_ESCAPE))
     {
         m_input.update();
+        //std::cout<<m_input.mousePosition.x<<' '<<m_input.mousePosition.y<<std::endl;
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
         r += increment;
 
