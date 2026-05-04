@@ -83,3 +83,13 @@ Zato sto glfw treba prvo da se inicijalizuje ja sam u konstruktoru to uradio pa 
 Ali posto nije automatksi napravljena ona dobije default (prazni) konstruktor koji sam dodao u window klasu.
 Doslo je do problema da kada zapocnem program odmah se pozove i destruktor te nove instance, zato sto se ta instanca napravi, kopira u moju vrednost unutar aplikacije, i brise sto poziva destruktor i invalidira vrednost koju smo kopirali.
 Resenje je koriscenje unique_ptr (unique pointera) i make_uniqe. Napravimo jednu instancu klase window na heapu i make unique nam vraca unique_ptr koji ga poseduje.
+
+------------------------------
+
+## Dan 7 - 4.5.2026.
+Implementirao sam input za key press held i release
+Takodje imao sam gresku kod window sizea jer na macu koji ima retina display njegova rezolucija je veca u pixelima, to je dovelo do problema gde postavljanje viewporta(gde se iscrtava opengl kod na ekranu) jer se nije podudaralo sa celim ekranom.
+Bolje objasnjeno:
+GLFW resize callback daje logicke piksele (OS koordinate), ali OpenGL radi sa fizickim pikselima (framebuffer). Na Retina displeju odnos je 2:1, pa je viewport bio duplo manji nego sto treba. Resenje: koristiti glfwGetFramebufferSize umesto parametara callback-a.
+
+------------------------------
