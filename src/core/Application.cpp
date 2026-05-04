@@ -4,6 +4,8 @@
 #include "graphics/Renderer.h"
 #include "graphics/VertexBuffer.h"
 #include "graphics/IndexBuffer.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -127,34 +129,50 @@ void Application::Run()
     GLCall(unsigned int shader = CreateShader(vertexShader, fragmentShader));
     GLCall(glUseProgram(shader));
 
-    GLCall(int location = glGetUniformLocation(shader, "u_Color"));
-    ASSERT(location != -1);
-    GLCall(glUniform4f(location, 0.2f, 0.3f, 0.8f, 1.0f));
+
+    glm::mat4 transform = glm::mat4(1.0f);
+    GLCall(int locTransform = glGetUniformLocation(shader, "u_Transform"));
+    ASSERT(locTransform != -1);
+    GLCall(glUniformMatrix4fv(locTransform, 1, GL_FALSE, glm::value_ptr(transform)));
+
+    GLCall(int locColor = glGetUniformLocation(shader, "u_Color"));
+    ASSERT(locColor != -1);
+    GLCall(glUniform4f(locColor, 0.2f, 0.3f, 0.8f, 1.0f));
+
 
     GLCall(glBindVertexArray(0));
     GLCall(glUseProgram(0));
     vbo.Unbind();
     ebo.Unbind();
 
-    float r = 0.0f;
     float increment = 0.05f;
+    float r = 0.0f;
 
     while (!m_window->shouldWindowClose()&&!m_input.isKeyPressed(GLFW_KEY_ESCAPE))
     {
+        r+=increment;
+        if(r>=1||r<=0){
+            increment*=-1.0f;
+        }
         m_input.update();
+        if(m_input.isKeyHeld(GLFW_KEY_UP) && !m_input.isKeyHeld(GLFW_KEY_DOWN))
+            transform = glm::translate(transform, glm::vec3(0, 0.01f, 0.0f));
+        else if(m_input.isKeyHeld(GLFW_KEY_DOWN) && !m_input.isKeyHeld(GLFW_KEY_UP)) 
+            transform = glm::translate(transform, glm::vec3(0, -0.01f, 0.0f));
+        if(m_input.isKeyHeld(GLFW_KEY_LEFT) && !m_input.isKeyHeld(GLFW_KEY_RIGHT))
+            transform = glm::translate(transform, glm::vec3(-0.01f, 0, 0.0f));
+        else if(m_input.isKeyHeld(GLFW_KEY_RIGHT) && !m_input.isKeyHeld(GLFW_KEY_LEFT))
+            transform = glm::translate(transform, glm::vec3(0.01f, 0, 0.0f));
         //std::cout<<m_input.mousePosition.x<<' '<<m_input.mousePosition.y<<std::endl;
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
-        r += increment;
 
         GLCall(glUseProgram(shader));
-        GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
+        GLCall(glUniformMatrix4fv(locTransform, 1, GL_FALSE, glm::value_ptr(transform)));
+        GLCall(glUniform4f(locColor, r, 0.3f, 0.8f, 1.0f));
 
         GLCall(glBindVertexArray(vao));
         ebo.Bind();
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
-
-        if (r > 1.0f || r < 0.0f)
-            increment *= -1;
 
         m_window->swapBuffers();
         glfwPollEvents();

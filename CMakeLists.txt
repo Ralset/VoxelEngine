@@ -17,6 +17,7 @@ add_executable(VoxelEngine
 
 target_include_directories(VoxelEngine PRIVATE
     external/glad/include
+    external/glm
     src
 )
 
