@@ -4,71 +4,15 @@
 #include "graphics/Renderer.h"
 #include "graphics/VertexBuffer.h"
 #include "graphics/IndexBuffer.h"
+#include "graphics/Shader.h"
 #include "glm/glm.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <fstream>
-#include <sstream>
 #include <string>
 #include <stdexcept>
-
-//For now------------------------------------------------------
-static std::string ParseShader(const std::string& filepath)
-{
-    std::ifstream file(filepath);
-    if (!file.is_open()){
-        throw std::runtime_error("ERROR: Couldn't open " + filepath);
-    } 
-    std::stringstream buffer;
-    buffer<<file.rdbuf();
-    return buffer.str();
-}
-
-static unsigned int CompileShader(unsigned int type, const std::string& source)
-{
-    GLCall(unsigned int id = glCreateShader(type));
-    const char* src = source.c_str();
-    GLCall(glShaderSource(id, 1, &src, nullptr));
-    GLCall(glCompileShader(id));
-
-    int result;
-    GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
-    if (!result){
-        int length;
-        GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
-        char* message = (char*)alloca(length * sizeof(char));
-        GLCall(glGetShaderInfoLog(id, length, &length, message));
-        std::cout<<"Failed to compile "<< (type == GL_VERTEX_SHADER ? "vertex" : "fragment") <<" shader!"<<std::endl;
-        std::cout<<message<<std::endl;
-        GLCall(glDeleteShader(id));
-        return 0;
-    }
-
-    return id;
-}
-
-static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
-{
-    GLCall(unsigned int program = glCreateProgram());
-    GLCall(unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader));
-    GLCall(unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader));
-
-    GLCall(glAttachShader(program, vs));
-    GLCall(glAttachShader(program, fs));
-    GLCall(glLinkProgram(program));
-    GLCall(glValidateProgram(program));
-
-    GLCall(glDetachShader(program, vs));
-    GLCall(glDetachShader(program, fs));
-    GLCall(glDeleteShader(vs));
-    GLCall(glDeleteShader(fs));
-
-    return program;
-}
-//-----------------------------------
 
 Application::Application() {
     ASSERT(glfwInit());
@@ -123,23 +67,10 @@ void Application::Run()
 
     IndexBuffer ebo(indices, 6 * sizeof(unsigned int));
 
-    std::string vertexShader=ParseShader("assets/shaders/Vertex.shader");
-    std::string fragmentShader=ParseShader("assets/shaders/Fragment.shader");
+    Shader shader("assets/shaders/Vertex.shader", "assets/shaders/Fragment.shader");
     
-    GLCall(unsigned int shader = CreateShader(vertexShader, fragmentShader));
-    GLCall(glUseProgram(shader));
-
-
     glm::mat4 transform = glm::mat4(1.0f);
-    GLCall(int locTransform = glGetUniformLocation(shader, "u_Transform"));
-    ASSERT(locTransform != -1);
-    GLCall(glUniformMatrix4fv(locTransform, 1, GL_FALSE, glm::value_ptr(transform)));
-
-    GLCall(int locColor = glGetUniformLocation(shader, "u_Color"));
-    ASSERT(locColor != -1);
-    GLCall(glUniform4f(locColor, 0.2f, 0.3f, 0.8f, 1.0f));
-
-
+    
     GLCall(glBindVertexArray(0));
     GLCall(glUseProgram(0));
     vbo.Unbind();
@@ -171,9 +102,9 @@ void Application::Run()
         //std::cout<<m_input.mousePosition.x<<' '<<m_input.mousePosition.y<<std::endl;
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-        GLCall(glUseProgram(shader));
-        GLCall(glUniformMatrix4fv(locTransform, 1, GL_FALSE, glm::value_ptr(transform)));
-        GLCall(glUniform4f(locColor, r, 0.3f, 0.8f, 1.0f));
+        shader.use();
+        shader.setUniform("u_Transform", transform);
+        shader.setUniform("u_Color", glm::vec4(r, 0.3f, 0.8f, 1.0f));
 
         GLCall(glBindVertexArray(vao));
         ebo.Bind();
@@ -182,6 +113,4 @@ void Application::Run()
         m_window->swapBuffers();
         glfwPollEvents();
     }
-
-    GLCall(glDeleteProgram(shader));
 }
