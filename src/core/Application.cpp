@@ -5,9 +5,9 @@
 #include "graphics/VertexBuffer.h"
 #include "graphics/IndexBuffer.h"
 #include "graphics/Shader.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
