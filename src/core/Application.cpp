@@ -145,7 +145,7 @@ void Application::Run()
     vbo.Unbind();
     ebo.Unbind();
 
-    float increment = 0.05f;
+    float increment = 0.01f;
     float r = 0.0f;
 
     while (!m_window->shouldWindowClose()&&!m_input.isKeyPressed(GLFW_KEY_ESCAPE))
@@ -163,6 +163,11 @@ void Application::Run()
             transform = glm::translate(transform, glm::vec3(-0.01f, 0, 0.0f));
         else if(m_input.isKeyHeld(GLFW_KEY_RIGHT) && !m_input.isKeyHeld(GLFW_KEY_LEFT))
             transform = glm::translate(transform, glm::vec3(0.01f, 0, 0.0f));
+
+        if(m_input.isKeyHeld(GLFW_KEY_W) && !m_input.isKeyHeld(GLFW_KEY_S))
+            transform = glm::scale(transform, glm::vec3(1.01f, 1.01f, 1.01f));
+        else if(m_input.isKeyHeld(GLFW_KEY_S) && !m_input.isKeyHeld(GLFW_KEY_W))
+            transform = glm::scale(transform, glm::vec3(0.99f, 0.99f, 0.99f));
         //std::cout<<m_input.mousePosition.x<<' '<<m_input.mousePosition.y<<std::endl;
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
