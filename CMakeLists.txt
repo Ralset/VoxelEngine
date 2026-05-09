@@ -14,6 +14,7 @@ add_executable(VoxelEngine
     src/graphics/VertexBuffer.cpp
     src/graphics/IndexBuffer.cpp
     src/graphics/Shader.cpp
+    src/graphics/VertexArray.cpp
 )
 
 target_include_directories(VoxelEngine PRIVATE

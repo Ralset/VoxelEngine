@@ -5,6 +5,8 @@
 #include "graphics/VertexBuffer.h"
 #include "graphics/IndexBuffer.h"
 #include "graphics/Shader.h"
+#include "graphics/VertexArray.h"
+#include "graphics/VertexBufferLayout.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -56,9 +58,13 @@ void Application::Run()
         2, 3, 0
     };
 
+    VertexArray va;
+    
+
     unsigned int vao;
     GLCall(glGenVertexArrays(1, &vao));
     GLCall(glBindVertexArray(vao));
+
 
     VertexBuffer vbo(points, 8 * sizeof(float));
 
