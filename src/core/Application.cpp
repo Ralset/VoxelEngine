@@ -58,29 +58,20 @@ void Application::Run()
         2, 3, 0
     };
 
-    VertexArray va;
-    va.AddBuffer(vbo, layout);
-    va.Bind();
-    va.Unbind();
-
-    unsigned int vao;
-    GLCall(glGenVertexArrays(1, &vao));
-    GLCall(glBindVertexArray(vao));
-
-
     VertexBuffer vbo(points, 8 * sizeof(float));
-
-    GLCall(glEnableVertexAttribArray(0));
-    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
-
     IndexBuffer ebo(indices, 6 * sizeof(unsigned int));
+
+    VertexArray vao;
+    VertexBufferLayout layout;
+    layout.Push<float>(2);
+    vao.AddBuffer(vbo, layout);
 
     Shader shader("assets/shaders/Vertex.shader", "assets/shaders/Fragment.shader");
     
     glm::mat4 transform = glm::mat4(1.0f);
     
-    GLCall(glBindVertexArray(0));
     shader.Unbind();
+    vao.Unbind();
     vbo.Unbind();
     ebo.Unbind();
 
@@ -114,7 +105,7 @@ void Application::Run()
         shader.setUniform("u_Transform", transform);
         shader.setUniform("u_Color", glm::vec4(r, 0.3f, 0.8f, 1.0f));
 
-        GLCall(glBindVertexArray(vao));
+        vao.Bind();
         ebo.Bind();
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
