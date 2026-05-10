@@ -30,8 +30,12 @@ Shader::~Shader(){
     GLCall(glDeleteProgram(u_programID));
 }
 
-void Shader::use() const{
+void Shader::Bind() const{
     GLCall(glUseProgram(u_programID));
+}
+
+void Shader::Unbind() const{
+    GLCall(glUseProgram(0));
 }
 
 void Shader::setUniform(const std::string &name, int data) {

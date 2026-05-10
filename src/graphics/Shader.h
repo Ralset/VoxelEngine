@@ -7,7 +7,8 @@ class Shader{
     public:
         Shader(const char* vertexPath, const char* fragmentPath);
         ~Shader();
-        void use() const;
+        void Bind() const;
+        void Unbind() const;
         void setUniform(const std::string &name, int data);    
         void setUniform(const std::string &name, bool data);
         void setUniform(const std::string &name, float data);    

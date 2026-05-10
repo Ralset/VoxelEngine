@@ -59,7 +59,9 @@ void Application::Run()
     };
 
     VertexArray va;
-    
+    va.AddBuffer(vbo, layout);
+    va.Bind();
+    va.Unbind();
 
     unsigned int vao;
     GLCall(glGenVertexArrays(1, &vao));
@@ -78,7 +80,7 @@ void Application::Run()
     glm::mat4 transform = glm::mat4(1.0f);
     
     GLCall(glBindVertexArray(0));
-    GLCall(glUseProgram(0));
+    shader.Unbind();
     vbo.Unbind();
     ebo.Unbind();
 
@@ -108,7 +110,7 @@ void Application::Run()
         //std::cout<<m_input.mousePosition.x<<' '<<m_input.mousePosition.y<<std::endl;
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-        shader.use();
+        shader.Bind();
         shader.setUniform("u_Transform", transform);
         shader.setUniform("u_Color", glm::vec4(r, 0.3f, 0.8f, 1.0f));
 
