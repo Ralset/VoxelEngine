@@ -1,5 +1,5 @@
 #include "VertexArray.h"
-#include "Renderer.h"
+#include "GLUtils.h"
 
 VertexArray::VertexArray(){
     GLCall(glGenVertexArrays(1, &m_RendererID));
@@ -13,9 +13,11 @@ VertexArray::~VertexArray(){
 void VertexArray::AddBuffer(VertexBuffer& vbo, VertexBufferLayout& layout){
     vbo.Bind();
     const auto& elements = layout.GetElements();
+    unsigned int offset=0;
     for(unsigned int i=0;i<elements.size();i++){
         GLCall(glEnableVertexAttribArray(i));
-        GLCall(glVertexAttribPointer(i, elements[i].count, elements[i].type, elements[i].normalized, elements[i].getStride(), (const void*)0));
+        GLCall(glVertexAttribPointer(i, elements[i].count, elements[i].type, elements[i].normalized, layout.GetStride(), (const void*)(uintptr_t)offset));
+        offset += elements[i].getStride();
     }
 }
 
