@@ -127,8 +127,24 @@ void Application::Run()
         m_input.update();
         renderer.Clear();
 
+        glm::vec3 direction;
+        direction.x = cos(glm::radians(m_input.getYaw())) * cos(glm::radians(m_input.getPitch()));
+        direction.y = 0;
+        direction.z = sin(glm::radians(m_input.getYaw())) * cos(glm::radians(m_input.getPitch()));
+        cameraFront = glm::normalize(direction);
+
         if(m_input.isKeyHeld(GLFW_KEY_W)) cameraPosition += cameraSpeed * cameraFront;
         if(m_input.isKeyHeld(GLFW_KEY_S)) cameraPosition -= cameraSpeed * cameraFront;
+        if(m_input.isKeyHeld(GLFW_KEY_A)) cameraPosition -= cameraSpeed * glm::normalize(glm::cross(cameraFront, glm::vec3(0.0f, 1.0f, 0.0f)));
+        if(m_input.isKeyHeld(GLFW_KEY_D)) cameraPosition += cameraSpeed * glm::normalize(glm::cross(cameraFront, glm::vec3(0.0f, 1.0f, 0.0f)));
+        if(m_input.isKeyHeld(GLFW_KEY_SPACE)) cameraPosition += cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
+        if(m_input.isKeyHeld(GLFW_KEY_LEFT_SHIFT)) cameraPosition -= cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
+
+        direction.y = sin(glm::radians(m_input.getPitch()));
+        cameraFront = glm::normalize(direction);
+
+        std::cout<<m_input.getPitch()<<' '<<m_input.getYaw()<<'\n';
+
 
         shader.Bind();
         view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, glm::vec3(0.0, 1.0, 0.0));

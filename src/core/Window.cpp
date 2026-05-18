@@ -31,6 +31,8 @@ Window::Window(int width, int height, const char* title) : m_width(width), m_hei
 
     glfwGetFramebufferSize(m_window, &m_framebufferWidth, &m_framebufferHeight);
     glViewport(0, 0, m_framebufferWidth, m_framebufferHeight);
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 }
 
 bool Window::shouldWindowClose(){
