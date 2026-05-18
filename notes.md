@@ -93,3 +93,21 @@ Bolje objasnjeno:
 GLFW resize callback daje logicke piksele (OS koordinate), ali OpenGL radi sa fizickim pikselima (framebuffer). Na Retina displeju odnos je 2:1, pa je viewport bio duplo manji nego sto treba. Resenje: koristiti glfwGetFramebufferSize umesto parametara callback-a.
 
 ------------------------------
+
+## Dan 8 - 17.5.2026.
+
+Implementirao sam 3d blokove.
+Napravio sam 3 matrixa, projection, view i model koji su potrebni za prikazivanje 3d grafike
+
+------------------------------
+
+## Dan 9 - 18.5.2026.
+
+Implementirao sam kameru.
+Trebam da je prebacim u sopstvenu klasu
+Kamera je zapravo projection i view matrix. Projection sluzi da normalizuje value da i dubinu smanji ih ili uveca od daljine od kamere
+view sluzi da prebacimo sve nase trouglove iz world spacea u view/camera space. uzima camera position u odnosu na svet i to koristi kao novi koordinatni pocetak.
+
+Objasniti pitch i yaw i pomeranje kako to utice na view matricu.
+
+------------------------------
