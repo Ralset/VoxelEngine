@@ -79,6 +79,13 @@ void Application::Run()
         6, 5, 1
     };
 
+    const glm::vec3 blocks[4] = {
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 5.0f, 1.0f),
+        glm::vec3(2.0f, 2.0f, -2.0f),
+        glm::vec3(-4.0f, 1.0f, 3.0f)
+    };
+
     VertexBuffer vbo(points, 24 * sizeof(float));
     IndexBuffer ebo(indices, 36 * sizeof(unsigned int), 36);
 
@@ -97,9 +104,10 @@ void Application::Run()
     Renderer renderer;
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -5.0f));
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 proj = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
+    glm::vec3 cameraPosition(0.0f, 0.0f, 10.0f);
+    glm::vec3 cameraFront(0.0f, 0.0f, -1.0f);
+    glm::mat4 view = glm::lookAt(cameraPosition, cameraFront + cameraFront, glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 proj = glm::perspective(glm::radians(60.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
 
     shader.Bind();
     shader.setUniform("u_Model", model);
@@ -112,16 +120,25 @@ void Application::Run()
     //glCullFace(GL_BACK);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    const float cameraSpeed = 0.1f;
+
     while (!m_window->shouldWindowClose()&&!m_input.isKeyPressed(GLFW_KEY_ESCAPE))
     {
         m_input.update();
+        renderer.Clear();
+
+        if(m_input.isKeyHeld(GLFW_KEY_W)) cameraPosition += cameraSpeed * cameraFront;
+        if(m_input.isKeyHeld(GLFW_KEY_S)) cameraPosition -= cameraSpeed * cameraFront;
 
         shader.Bind();
-        model = glm::rotate(model, glm::radians(1.0f), glm::vec3(1.0f, 0.5f, 0.0f));
-        shader.setUniform("u_Model", model);
+        view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, glm::vec3(0.0, 1.0, 0.0));
+        shader.setUniform("u_View", view);
 
-        renderer.Clear();
-        renderer.Draw(vao, ebo, shader);
+        for(int i=0;i<4;i++){
+            shader.setUniform("u_Model", glm::translate(model, blocks[i]));
+            renderer.Draw(vao, ebo, shader);
+        }
+        
 
         m_window->swapBuffers();
         glfwPollEvents();
