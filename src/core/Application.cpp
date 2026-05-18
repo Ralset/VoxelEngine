@@ -63,20 +63,20 @@ void Application::Run()
         0, 1, 2, // front 
         2, 3, 0, 
 
-        4, 5, 6, // back
-        6, 7, 4,
+        6, 5, 4, // back
+        4, 7, 6,
 
         3, 2, 6, // top
         6, 7, 3,
 
-        0, 1, 5, // bottom
-        5, 4, 0,
+        5, 1, 0, // bottom
+        0, 4, 5,
 
         0, 3, 7, // left
         7, 4, 0,
-        
-        1, 2, 6, // right
-        6, 5, 1
+
+        6, 2, 1, // right
+        1, 5, 6
     };
 
     const glm::vec3 blocks[4] = {
@@ -103,21 +103,21 @@ void Application::Run()
 
     Renderer renderer;
 
-    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 model(1.0f);
     glm::vec3 cameraPosition(0.0f, 0.0f, 10.0f);
     glm::vec3 cameraFront(0.0f, 0.0f, -1.0f);
-    glm::mat4 view = glm::lookAt(cameraPosition, cameraFront + cameraFront, glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 proj = glm::perspective(glm::radians(60.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
 
     shader.Bind();
-    shader.setUniform("u_Model", model);
     shader.setUniform("u_View", view);
     shader.setUniform("u_Projection", proj);
     shader.setUniform("u_Color", glm::vec4(0.1f, 0.3f, 0.8f, 1.0f));
     shader.Unbind();
 
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     const float cameraSpeed = 0.1f;
@@ -127,6 +127,7 @@ void Application::Run()
         m_input.update();
         renderer.Clear();
 
+        // CAMERA START ----------------------------------------------------------------------
         glm::vec3 direction;
         direction.x = cos(glm::radians(m_input.getYaw())) * cos(glm::radians(m_input.getPitch()));
         direction.y = 0;
@@ -143,12 +144,10 @@ void Application::Run()
         direction.y = sin(glm::radians(m_input.getPitch()));
         cameraFront = glm::normalize(direction);
 
-        std::cout<<m_input.getPitch()<<' '<<m_input.getYaw()<<'\n';
-
-
         shader.Bind();
         view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, glm::vec3(0.0, 1.0, 0.0));
         shader.setUniform("u_View", view);
+        // CAMERA END ----------------------------------------------------------------------
 
         for(int i=0;i<4;i++){
             shader.setUniform("u_Model", glm::translate(model, blocks[i]));
