@@ -1,7 +1,7 @@
-#include "Input.h"
-#include <cstring>
-#include <GLFW/glfw3.h>
+#include "core/Input.h"
 
+#include <GLFW/glfw3.h>
+#include <cstring>
 #include <iostream>
 
 Input::Input(const float width, const float height) 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <stdexcept>
 
 #define ASSERT(x) if(!(x)) throw std::runtime_error(std::string("Assert failed: ") + #x + " at line: " + std::to_string(__LINE__) + " at file: " + __FILE__);
 #define GLCall(x)\

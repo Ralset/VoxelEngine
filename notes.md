@@ -153,9 +153,38 @@ float points[24] = {
     0.5f, 0.5f, -0.5f,  // gore desno back
     -0.5f, 0.5f, -0.5f, // gore levo  back
 };
+
+unsigned int indices[36] = {
+    0, 1, 2, // front 
+    2, 3, 0, 
+
+    6, 5, 4, // back
+    4, 7, 6,
+
+    3, 2, 6, // top
+    6, 7, 3,
+
+    5, 1, 0, // bottom
+    0, 4, 5,
+
+    0, 3, 7, // left
+    7, 4, 0,
+
+    6, 2, 1, // right
+    1, 5, 6
+};
 ```
 Ali mislim da to rusi poentu blok klase koja treba da bude abstraktna klasa. Tako da verovatno ce onda svaki id uzimati iz takve blok klase za taj id parametre.
 ALI za to mi treba blok klasa da radi i da je napisem.
 PRVA Verzija ce biti chunk sa hard codovanim blok koordinatama a zatim kada to proradi mogu da razmisljam o blok klasi
+
+------------------------------
+
+## Dan 12 - 20.5.2026.
+
+Posto se spremam da napisem chunk klasu odlucio sam prvo da refaktorujem kod tako da rascistim da u svakoj klasi include bude u .cpp a ne u .h i takodje cistim application jer on ne treba da ima vise uopste veze sa pravljenjem bilo kog opengl elementa tako da prvo menjam include u svim .h tako da application klasa ne includuje njih automatski kada includuje neku .h klasu.
+
+### Zasto je ovo dobra odluka
+Van samo cistijeg koda jeste da forward declaration (umesto da includujem biblioteku samo kazemo da je to vec definisano/bice definisano) u headeru smanjuje compile time i sprecava cirkularne zavisnosti, a implementacioni detalji ostaju enkapsulirani u .cpp.
 
 ------------------------------

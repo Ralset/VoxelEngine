@@ -1,4 +1,9 @@
-#include "Chunk.h"
+#include "world/Chunk.h"
+
+#include "graphics/VertexBuffer.h"
+#include "graphics/IndexBuffer.h"
+#include "graphics/VertexArray.h"
+#include "graphics/VertexBufferLayout.h"
 
 Chunk::Chunk(int x,int y)
 : m_x(x), m_y(y), m_blocks{}

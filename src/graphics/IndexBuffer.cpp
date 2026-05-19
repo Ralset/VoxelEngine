@@ -1,6 +1,6 @@
-#include "IndexBuffer.h"
+#include "graphics/IndexBuffer.h"
 
-#include "GLUtils.h"
+#include "graphics/GLUtils.h"
 
 IndexBuffer::IndexBuffer(const void* data, unsigned int size, unsigned int count) : m_count(count)
 {

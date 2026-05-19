@@ -1,4 +1,4 @@
-#include "GLUtils.h"
+#include "graphics/GLUtils.h"
 
 #include <string>
 #include <stdexcept>

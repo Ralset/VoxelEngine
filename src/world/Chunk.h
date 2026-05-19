@@ -1,5 +1,8 @@
 #pragma once
 
+class VertexBuffer;
+class IndexBuffer;
+
 class Chunk{
     public:
         Chunk(int x, int y);
@@ -10,5 +13,5 @@ class Chunk{
         unsigned int m_blocks[16][256][16];
         int m_x;
         int m_y;
-        
+
 };

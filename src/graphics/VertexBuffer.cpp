@@ -1,6 +1,6 @@
-#include "VertexBuffer.h"
+#include "graphics/VertexBuffer.h"
 
-#include "GLUtils.h"
+#include "graphics/GLUtils.h"
 
 VertexBuffer::VertexBuffer(const void* data, unsigned int size)
 {

@@ -1,5 +1,6 @@
-#include "Shader.h"
-#include "GLUtils.h"
+#include "graphics/Shader.h"
+
+#include "graphics/GLUtils.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
