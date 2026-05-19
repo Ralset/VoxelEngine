@@ -12,6 +12,7 @@ GLFW, GLAD, GLM
 ## Resursi
 https://learnopengl.com/
 https://docs.gl/
+http://www.cse.yorku.ca/~amana/research/grid.pdf
 
 ## Pre projekta
 Ono sto znam za OpenGL je da je to konfiguracija.
@@ -120,5 +121,34 @@ Imam problem koji je da applicaiton klasa sadrzi window klasu, a player sadrzi i
 Window ima resize callback u application klasi
 a input ima key i mouse callback u playeru
 GLFWindow context za callbackove moze da pointuje samo na jednu klasu tako da je resenje da u applicaitonu.h napravimo struct koji cuvao pointer za application klasu i player klasu i onda mozemo da referencujemo taj struct i da preko nje biramo app ili player za odredjene callbackove
+
+------------------------------
+
+## Dan 10-11 - 19/20.5.2026
+
+Sta sam krenuo da radim nakon sto mi je kamera i player proradio jeste chunk klasa.
+Ono sto sam provalio jeste da je chunk vrlo tezak za implementiranje zbog grafike.
+Ono sto chunk ima jeste niz 16x256x16 koji sadrzi id bloka
+sad ono sto sam razmisljao jeste da kada gradimo mesh (nalaze se koordinate iz model space-a) i dodamo takodje 6 indexa za jedan face (kvadrat - 2 trougla).
+Prva ideja mi je bila da napravim VBO koji sadrzi sve moguce tacke koje mogu da se koriste (grid 16x256x16) i onda da imam samo EBO koji ce sadrzati indekse vertexa u VBO-u koji se koriste (visible). Ali shvatio sam da je to los pristup jer ce VBO biti prepun vertexa koji su nepotrebni.
+Bolji pristup ovome jeste da svaki put kada zatreba izgradimo nov VBO i EBO (oni su povezani) tako sto prodjemo koordinatu po koordinatu unutar chunka i pogledamo za svaku poziciju svaki face (gore dole levo desno napred nazad) i onda za svaki face dodamo 4 vertexa (mozda cak i 2 jer susedni blok deli potencijalno). Takodje jos razmatram da sve cuvam u mapi ili setu pa onda da nemam duplikate tako.
+Ne razmatram vise zato sto kada dodam teksture dodaju u VBO i UV koordinate tako da za svaki face dodamo 4 vertexa.
+E sad ja mogu da uzmem u chunku da kazem da su faceovi po kooridnatama kao sto je i kocka:
+```cpp
+float points[24] = {
+    -0.5f, -0.5f, 0.5f, // dole levo front
+    0.5f, -0.5f, 0.5f, // dole desno front
+    0.5f, 0.5f, 0.5f,  // gore desno front
+    -0.5f, 0.5f, 0.5f, // gore levo  front
+
+    -0.5f, -0.5f, -0.5f, // dole levo back
+    0.5f, -0.5f, -0.5f, // dole desno back
+    0.5f, 0.5f, -0.5f,  // gore desno back
+    -0.5f, 0.5f, -0.5f, // gore levo  back
+};
+```
+Ali mislim da to rusi poentu blok klase koja treba da bude abstraktna klasa. Tako da verovatno ce onda svaki id uzimati iz takve blok klase za taj id parametre.
+ALI za to mi treba blok klasa da radi i da je napisem.
+PRVA Verzija ce biti chunk sa hard codovanim blok koordinatama a zatim kada to proradi mogu da razmisljam o blok klasi
 
 ------------------------------
