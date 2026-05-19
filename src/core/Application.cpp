@@ -8,6 +8,7 @@
 #include "graphics/VertexArray.h"
 #include "graphics/VertexBufferLayout.h"
 #include "graphics/Renderer.h"
+#include "player/Camera.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -20,6 +21,7 @@
 Application::Application() {
     ASSERT(glfwInit());
     m_window = std::make_unique<Window>(1280, 720, "VoxelGame");
+    m_input = std::make_unique<Input>(1280, 720);
     glfwSetWindowUserPointer(m_window->getWindow(), this);
     glfwSetFramebufferSizeCallback(m_window->getWindow(), resizeCallBack);
     glfwSetKeyCallback(m_window->getWindow(), keyCallBack);
@@ -37,12 +39,12 @@ void Application::resizeCallBack(GLFWwindow* window, int width, int height){
 
 void Application::keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods){
     Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
-    app->m_input.onKey(key, action);
+    app->m_input->onKey(key, action);
 }
 
 void Application::cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
     Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
-    app->m_input.onCursorMove(xpos, ypos);
+    app->m_input->onCursorMove(xpos, ypos);
 }
 
 void Application::Run()
@@ -102,16 +104,10 @@ void Application::Run()
     ebo.Unbind();
 
     Renderer renderer;
-
+    Camera camera(glm::vec3(0.0f, 0.0f, 2.0f), 0.1f, 45.0f, m_window->getWidth(), m_window->getHeight(), 0.1f, 100.0f);
     glm::mat4 model(1.0f);
-    glm::vec3 cameraPosition(0.0f, 0.0f, 10.0f);
-    glm::vec3 cameraFront(0.0f, 0.0f, -1.0f);
-    glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 proj = glm::perspective(glm::radians(60.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
 
     shader.Bind();
-    shader.setUniform("u_View", view);
-    shader.setUniform("u_Projection", proj);
     shader.setUniform("u_Color", glm::vec4(0.1f, 0.3f, 0.8f, 1.0f));
     shader.Unbind();
 
@@ -122,31 +118,24 @@ void Application::Run()
 
     const float cameraSpeed = 0.1f;
 
-    while (!m_window->shouldWindowClose()&&!m_input.isKeyPressed(GLFW_KEY_ESCAPE))
+    while (!m_window->shouldWindowClose()&&!m_input->isKeyPressed(GLFW_KEY_ESCAPE))
     {
-        m_input.update();
+        m_input->update();
         renderer.Clear();
 
         // CAMERA START ----------------------------------------------------------------------
-        glm::vec3 direction;
-        direction.x = cos(glm::radians(m_input.getYaw())) * cos(glm::radians(m_input.getPitch()));
-        direction.y = 0;
-        direction.z = sin(glm::radians(m_input.getYaw())) * cos(glm::radians(m_input.getPitch()));
-        cameraFront = glm::normalize(direction);
+        camera.changeRotation(m_input->getYawChange(), m_input->getPitchChange());
 
-        if(m_input.isKeyHeld(GLFW_KEY_W)) cameraPosition += cameraSpeed * cameraFront;
-        if(m_input.isKeyHeld(GLFW_KEY_S)) cameraPosition -= cameraSpeed * cameraFront;
-        if(m_input.isKeyHeld(GLFW_KEY_A)) cameraPosition -= cameraSpeed * glm::normalize(glm::cross(cameraFront, glm::vec3(0.0f, 1.0f, 0.0f)));
-        if(m_input.isKeyHeld(GLFW_KEY_D)) cameraPosition += cameraSpeed * glm::normalize(glm::cross(cameraFront, glm::vec3(0.0f, 1.0f, 0.0f)));
-        if(m_input.isKeyHeld(GLFW_KEY_SPACE)) cameraPosition += cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
-        if(m_input.isKeyHeld(GLFW_KEY_LEFT_SHIFT)) cameraPosition -= cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
-
-        direction.y = sin(glm::radians(m_input.getPitch()));
-        cameraFront = glm::normalize(direction);
+        if(m_input->isKeyHeld(GLFW_KEY_W)) camera.moveForward(cameraSpeed);
+        if(m_input->isKeyHeld(GLFW_KEY_S)) camera.moveBackwards(cameraSpeed);
+        if(m_input->isKeyHeld(GLFW_KEY_A)) camera.moveLeft(cameraSpeed);
+        if(m_input->isKeyHeld(GLFW_KEY_D)) camera.moveRight(cameraSpeed);
+        if(m_input->isKeyHeld(GLFW_KEY_SPACE)) camera.moveUp(cameraSpeed);
+        if(m_input->isKeyHeld(GLFW_KEY_LEFT_SHIFT)) camera.moveDown(cameraSpeed);
 
         shader.Bind();
-        view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, glm::vec3(0.0, 1.0, 0.0));
-        shader.setUniform("u_View", view);
+        shader.setUniform("u_View", camera.getView());
+        shader.setUniform("u_Projection", camera.getProjection());
         // CAMERA END ----------------------------------------------------------------------
 
         for(int i=0;i<4;i++){

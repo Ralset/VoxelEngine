@@ -4,9 +4,9 @@
 
 #include <iostream>
 
-Input::Input() : m_x(640), m_y(360), m_pitch(0), m_yaw(270)
+Input::Input(const float width, const float height) 
+: m_x(width/2), m_y(height/2), m_previousX(width/2), m_previousY(height/2), m_firstMove(true)
 {
-    firstMouse = true;
     memset(m_currentKeys, false, 350 * sizeof(bool));
     memset(m_previousKeys, false, 350 * sizeof(bool));
 }
@@ -14,6 +14,11 @@ Input::Input() : m_x(640), m_y(360), m_pitch(0), m_yaw(270)
 void Input::update()
 {
     memcpy(m_previousKeys, m_currentKeys, 350*sizeof(bool));
+    m_yawChange   = m_x - m_previousX;
+    m_pitchChange = m_previousY - m_y;
+
+    m_previousX = m_x;
+    m_previousY = m_y;
 }
 
 void Input::onKey(int key, int action)
@@ -25,22 +30,14 @@ void Input::onKey(int key, int action)
 
 void Input::onCursorMove(double xpos, double ypos)
 {
-    if (firstMouse)
+    if(m_firstMove)
     {
-        m_x = xpos;
-        m_y = ypos;
-        firstMouse = false;
+        m_previousX = xpos;
+        m_previousY = ypos;
+        m_firstMove = false;
     }
-
-    float xoffest = xpos - m_x;
-    float yoffset = m_y - ypos;
     m_x = xpos;
     m_y = ypos;
-    m_yaw += xoffest * m_mouseSensitivity;
-    m_pitch += yoffset * m_mouseSensitivity;
-    m_pitch = std::max(std::min(m_pitch, 89.0f), -89.0f);
-    if(m_yaw <= 0) m_yaw += 360;
-    if(m_yaw >= 360) m_yaw -= 360;
 }
 
 bool Input::isKeyHeld(int key) const{

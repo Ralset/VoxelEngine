@@ -15,5 +15,5 @@ class Application{
         static void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
         static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
         std::unique_ptr<Window> m_window;
-        Input m_input;
+        std::unique_ptr<Input> m_input;
 };

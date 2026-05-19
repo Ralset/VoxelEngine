@@ -9,7 +9,9 @@ class Window {
         void swapBuffers();
         bool shouldWindowClose();
         void resizeWindow(int width, int height);
-        inline GLFWwindow* getWindow() const {return m_window;} 
+        inline GLFWwindow* getWindow() const {return m_window; };
+        inline int getWidth() const { return m_width; };
+        inline int getHeight() const { return m_height; };
 
     private:
         GLFWwindow* m_window;
