@@ -95,14 +95,21 @@ GLFW resize callback daje logicke piksele (OS koordinate), ali OpenGL radi sa fi
 
 ------------------------------
 
-## Dan 8 - 17.5.2026.
+## Dan(i) 8 - 5-16.5.2026.
+Implementirao sam sve osnovne klase koje pokrivaju opengl
+Kao sto su shader vao vbo ebo vertexlayout
+Tako da to sam malo skippovao jer ne znam zasto ali nisam pisao note-ove tada. Pogledaj commit history kasnije da vidim sta je tacno sve uradjeno
+
+------------------------------
+
+## Dan 9 - 17.5.2026.
 
 Implementirao sam 3d blokove.
 Napravio sam 3 matrixa, projection, view i model koji su potrebni za prikazivanje 3d grafike
 
 ------------------------------
 
-## Dan 9 - 18.5.2026.
+## Dan 10 - 18.5.2026.
 
 Implementirao sam kameru.
 Trebam da je prebacim u sopstvenu klasu
@@ -113,7 +120,7 @@ Objasniti pitch i yaw i pomeranje kako to utice na view matricu.
 
 ------------------------------
 
-## Dan 10 - 19.5.2026.
+## Dan 11 - 19.5.2026.
 
 Implementirao sam klasu za kameru.
 Problem koji sam nasao jeste kada sam pravio player klasu
@@ -124,7 +131,7 @@ GLFWindow context za callbackove moze da pointuje samo na jednu klasu tako da je
 
 ------------------------------
 
-## Dan 10-11 - 19/20.5.2026
+## Dan 11-12 - 19/20.5.2026
 
 Sta sam krenuo da radim nakon sto mi je kamera i player proradio jeste chunk klasa.
 Ono sto sam provalio jeste da je chunk vrlo tezak za implementiranje zbog grafike.
