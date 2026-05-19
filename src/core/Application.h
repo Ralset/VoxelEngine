@@ -1,9 +1,16 @@
 #pragma once
 
-#include "Input.h"
-#include "Window.h"
-
+#include "core/Window.h"
 #include <memory>
+
+struct GLFWwindow;
+class Player;
+class Application;
+
+struct WindowUserData {
+    Application* app;
+    Player* player;
+};
 
 class Application{
     public:
@@ -14,6 +21,7 @@ class Application{
         static void resizeCallBack(GLFWwindow* window, int width, int height);
         static void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
         static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
+
         std::unique_ptr<Window> m_window;
-        std::unique_ptr<Input> m_input;
+        WindowUserData m_userData;
 };

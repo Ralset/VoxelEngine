@@ -8,7 +8,7 @@
 #include "graphics/VertexArray.h"
 #include "graphics/VertexBufferLayout.h"
 #include "graphics/Renderer.h"
-#include "player/Camera.h"
+#include "player/Player.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -21,31 +21,29 @@
 Application::Application() {
     ASSERT(glfwInit());
     m_window = std::make_unique<Window>(1280, 720, "VoxelGame");
-    m_input = std::make_unique<Input>(1280, 720);
-    glfwSetWindowUserPointer(m_window->getWindow(), this);
     glfwSetFramebufferSizeCallback(m_window->getWindow(), resizeCallBack);
     glfwSetKeyCallback(m_window->getWindow(), keyCallBack);
     glfwSetCursorPosCallback(m_window->getWindow(), cursorPosCallback);
+    glfwSetInputMode(m_window->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 Application::~Application() {
     glfwTerminate();
 }
 
-void Application::resizeCallBack(GLFWwindow* window, int width, int height){
-    Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
-    app->m_window->resizeWindow(width, height);
+void Application::resizeCallBack(GLFWwindow* window, int width, int height) {
+    auto* data = static_cast<WindowUserData*>(glfwGetWindowUserPointer(window));
+    data->app->m_window->resizeWindow(width, height);
+}
+void Application::keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    auto* data = static_cast<WindowUserData*>(glfwGetWindowUserPointer(window));
+    data->player->onKey(key, action);
+}
+void Application::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+    auto* data = static_cast<WindowUserData*>(glfwGetWindowUserPointer(window));
+    data->player->onCursorMove(xpos, ypos);
 }
 
-void Application::keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods){
-    Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
-    app->m_input->onKey(key, action);
-}
-
-void Application::cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
-    Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
-    app->m_input->onCursorMove(xpos, ypos);
-}
 
 void Application::Run()
 {
@@ -104,7 +102,10 @@ void Application::Run()
     ebo.Unbind();
 
     Renderer renderer;
-    Camera camera(glm::vec3(0.0f, 0.0f, 2.0f), 0.1f, 45.0f, m_window->getWidth(), m_window->getHeight(), 0.1f, 100.0f);
+    Player player(glm::vec3(0.0f, 0.0f, -2.0f), 0.1f, m_window->getWidth(), m_window->getHeight());
+    m_userData = { this, &player }; 
+    glfwSetWindowUserPointer(m_window->getWindow(), &m_userData);
+    
     glm::mat4 model(1.0f);
 
     shader.Bind();
@@ -116,33 +117,19 @@ void Application::Run()
     glCullFace(GL_BACK);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    const float cameraSpeed = 0.1f;
-
-    while (!m_window->shouldWindowClose()&&!m_input->isKeyPressed(GLFW_KEY_ESCAPE))
+    while (!m_window->shouldWindowClose() && !player.isKeyPressed(GLFW_KEY_ESCAPE))
     {
-        m_input->update();
         renderer.Clear();
-
-        // CAMERA START ----------------------------------------------------------------------
-        camera.changeRotation(m_input->getYawChange(), m_input->getPitchChange());
-
-        if(m_input->isKeyHeld(GLFW_KEY_W)) camera.moveForward(cameraSpeed);
-        if(m_input->isKeyHeld(GLFW_KEY_S)) camera.moveBackwards(cameraSpeed);
-        if(m_input->isKeyHeld(GLFW_KEY_A)) camera.moveLeft(cameraSpeed);
-        if(m_input->isKeyHeld(GLFW_KEY_D)) camera.moveRight(cameraSpeed);
-        if(m_input->isKeyHeld(GLFW_KEY_SPACE)) camera.moveUp(cameraSpeed);
-        if(m_input->isKeyHeld(GLFW_KEY_LEFT_SHIFT)) camera.moveDown(cameraSpeed);
+        player.Update();
 
         shader.Bind();
-        shader.setUniform("u_View", camera.getView());
-        shader.setUniform("u_Projection", camera.getProjection());
-        // CAMERA END ----------------------------------------------------------------------
+        shader.setUniform("u_View", player.getView());
+        shader.setUniform("u_Projection", player.getProjection());
 
         for(int i=0;i<4;i++){
             shader.setUniform("u_Model", glm::translate(model, blocks[i]));
             renderer.Draw(vao, ebo, shader);
         }
-        
 
         m_window->swapBuffers();
         glfwPollEvents();

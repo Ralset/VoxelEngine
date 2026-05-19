@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-Camera::Camera(const glm::vec3 startPosition, const float sensitivity,const float fov, const float width, const float height, const float nearPlane, const float farPlane) 
-: m_pitch(0), m_yaw(270), m_Position(startPosition), m_sensitivity(sensitivity)
+Camera::Camera(const float sensitivity,const float fov, const float width, const float height, const float nearPlane, const float farPlane) 
+: m_pitch(0), m_yaw(270), m_sensitivity(sensitivity)
 {
     glm::vec3 direction;
     direction.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
@@ -28,24 +28,4 @@ void Camera::changeRotation(const float xoffset, const float yoffset)
     direction.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
     m_Front = glm::normalize(direction);
     m_FrontMovement = glm::normalize(glm::vec3(direction.x, 0.0f, direction.z));
-    std::cout<<m_pitch<<' '<<m_yaw<<'\n';
-}
-
-void Camera::moveUp(const float speed){
-    m_Position += speed * glm::vec3(0.0f, 1.0f, 0.0f);
-}
-void Camera::moveDown(const float speed){
-    m_Position -= speed * glm::vec3(0.0f, 1.0f, 0.0f);
-}
-void Camera::moveLeft(const float speed){
-    m_Position -= speed * glm::normalize(glm::cross(m_FrontMovement, glm::vec3(0.0f, 1.0f, 0.0f)));
-}
-void Camera::moveRight(const float speed){
-    m_Position += speed * glm::normalize(glm::cross(m_FrontMovement, glm::vec3(0.0f, 1.0f, 0.0f)));
-}
-void Camera::moveForward(const float speed){
-    m_Position += speed * m_FrontMovement;
-}
-void Camera::moveBackwards(const float speed){
-    m_Position -= speed * m_FrontMovement;
 }

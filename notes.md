@@ -111,3 +111,14 @@ view sluzi da prebacimo sve nase trouglove iz world spacea u view/camera space. 
 Objasniti pitch i yaw i pomeranje kako to utice na view matricu.
 
 ------------------------------
+
+## Dan 10 - 19.5.2026.
+
+Implementirao sam klasu za kameru.
+Problem koji sam nasao jeste kada sam pravio player klasu
+Imam problem koji je da applicaiton klasa sadrzi window klasu, a player sadrzi input klasu
+Window ima resize callback u application klasi
+a input ima key i mouse callback u playeru
+GLFWindow context za callbackove moze da pointuje samo na jednu klasu tako da je resenje da u applicaitonu.h napravimo struct koji cuvao pointer za application klasu i player klasu i onda mozemo da referencujemo taj struct i da preko nje biramo app ili player za odredjene callbackove
+
+------------------------------
