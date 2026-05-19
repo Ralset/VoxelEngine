@@ -16,6 +16,7 @@ add_executable(VoxelEngine
     src/graphics/Shader.cpp
     src/graphics/VertexArray.cpp
     src/graphics/GLUtils.cpp
+    src/player/Camera.cpp
 )
 
 target_include_directories(VoxelEngine PRIVATE
