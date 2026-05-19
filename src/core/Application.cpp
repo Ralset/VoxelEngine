@@ -9,6 +9,7 @@
 #include "graphics/VertexBufferLayout.h"
 #include "graphics/Renderer.h"
 #include "player/Player.h"
+#include "world/Chunk.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

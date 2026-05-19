@@ -18,6 +18,9 @@ add_executable(VoxelEngine
     src/graphics/GLUtils.cpp
     src/player/Camera.cpp
     src/player/Player.cpp
+    src/world/World.cpp
+    src/world/Chunk.cpp
+    src/world/Block.cpp
 )
 
 target_include_directories(VoxelEngine PRIVATE
