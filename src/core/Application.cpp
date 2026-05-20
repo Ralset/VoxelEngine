@@ -44,7 +44,12 @@ void Application::Run()
     m_userData = { this, &player };
     glfwSetWindowUserPointer(m_window->getWindow(), &m_userData);
 
-    Chunk chunk(0, 0);
+    Chunk chunks[] = {
+        Chunk(0,0),
+        Chunk(-1,0),
+        Chunk(0,-1),
+        Chunk(-1,-1)
+    };
 
     while (!m_window->shouldWindowClose() && !player.isKeyPressed(GLFW_KEY_ESCAPE))
     {
@@ -52,12 +57,14 @@ void Application::Run()
         player.Update();
 
         renderer.m_shader->Bind();
-        renderer.m_shader->setUniform("u_Model", glm::mat4(1.0f));
         renderer.m_shader->setUniform("u_View", player.getView());
         renderer.m_shader->setUniform("u_Projection", player.getProjection());
         renderer.m_shader->setUniform("u_Color", glm::vec4(0.1f, 0.3f, 0.8f, 1.0f));
 
-        renderer.Draw(chunk.getVAO(), chunk.getEBO());
+        for(int i=0;i<4;i++){
+            renderer.m_shader->setUniform("u_Model", chunks[i].getModel());
+            renderer.Draw(chunks[i].getVAO(), chunks[i].getEBO());
+        }
 
         m_window->swapBuffers();
         glfwPollEvents();

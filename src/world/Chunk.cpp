@@ -9,14 +9,14 @@
 
 #include <stdexcept>
 
-Chunk::Chunk(int x,int y)
-: m_x(x), m_y(y), m_blocks{}
+Chunk::Chunk(int x,int z)
+: m_x(x), m_z(z), m_blocks{}
 {
+    m_Model = glm::translate(glm::mat4(1.0f), glm::vec3((float)x*16, 0.0f, (float)z*16));
     m_VAO = std::make_unique<VertexArray>();
     for(int x=0;x<16;x++){
-        for(int y=0;y<250;y++){
+        for(int y=0;y<4;y++){
             for(int z=0;z<16;z++){
-                if(x==6&&y==63&&z==14)continue;
                 m_blocks[x][y][z]=1;
             }    
         }
@@ -26,8 +26,9 @@ Chunk::Chunk(int x,int y)
 
 Chunk::~Chunk() = default;
 
-const VertexArray& Chunk::getVAO() const { return *m_VAO; }
-const IndexBuffer& Chunk::getEBO() const { return *m_EBO; }
+const glm::mat4 Chunk::getModel() const { return m_Model; };
+const VertexArray& Chunk::getVAO() const { return *m_VAO; };
+const IndexBuffer& Chunk::getEBO() const { return *m_EBO; };
 
 void Chunk::addFace(std::vector<float>& vertices, std::vector<unsigned int>& indices, float x, float y, float z, int face)
 {
