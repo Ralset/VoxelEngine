@@ -16,6 +16,7 @@ class Chunk{
         ~Chunk();
         void UpdateBlock(int x,int y);
 
+        inline const unsigned int getBlockID(int x,int y,int z) const { return m_blocks[x][y][z]; };
         const glm::mat4 getModel() const;
         const VertexArray& getVAO() const;
         const IndexBuffer& getEBO() const;

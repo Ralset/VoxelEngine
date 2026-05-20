@@ -19,6 +19,7 @@ class Player{
         inline bool isKeyPressed(int key) const { return m_input->isKeyPressed(key); };
         inline void onKey(int key, int action) const { m_input->onKey(key, action); };
         inline void onCursorMove(double x, double y) const { m_input->onCursorMove(x, y); };
+        inline void onMouseButtonClick(int button, int action) const { m_input->onMouseButtonClick(button, action); };
 
     private:
         const float m_speed;
@@ -27,4 +28,6 @@ class Player{
         std::unique_ptr<Camera> m_camera;
         std::unique_ptr<Input> m_input;
         World* currentWorld;
+
+        void inputUpdate();
 };

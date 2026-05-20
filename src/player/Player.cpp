@@ -18,15 +18,25 @@ Player::Player(World* world, glm::vec3 startLocation, const float playerHeight,c
 }
 
 void Player::Update() {
+    inputUpdate();
     m_input->update();
     m_camera->changeRotation(m_input->getYawChange(), m_input->getPitchChange());
 
-    if(m_input->isKeyHeld(GLFW_KEY_W)) m_Position += m_speed * m_camera->getFront();
-    if(m_input->isKeyHeld(GLFW_KEY_S)) m_Position -= m_speed * m_camera->getFront();
-    if(m_input->isKeyHeld(GLFW_KEY_A)) m_Position -= m_speed * glm::normalize(glm::cross(m_camera->getFront(), glm::vec3(0.0f, 1.0f, 0.0f)));
-    if(m_input->isKeyHeld(GLFW_KEY_D)) m_Position += m_speed * glm::normalize(glm::cross(m_camera->getFront(), glm::vec3(0.0f, 1.0f, 0.0f)));
+    //std::cout<<"Camera dir - "<<m_camera->getDirection().x<<' '<<m_camera->getDirection().y<<' '<<m_camera->getDirection().z<<std::endl;
+    //std::cout<<m_Position.x<<' '<<m_Position.y<<' '<<m_Position.z<<'\n';
+}
+
+void Player::inputUpdate(){
+    if(m_input->isKeyHeld(GLFW_KEY_W)) m_Position += m_speed * m_camera->getMovDireciton();
+    if(m_input->isKeyHeld(GLFW_KEY_S)) m_Position -= m_speed * m_camera->getMovDireciton();
+    if(m_input->isKeyHeld(GLFW_KEY_A)) m_Position -= m_speed * glm::normalize(glm::cross(m_camera->getMovDireciton(), glm::vec3(0.0f, 1.0f, 0.0f)));
+    if(m_input->isKeyHeld(GLFW_KEY_D)) m_Position += m_speed * glm::normalize(glm::cross(m_camera->getMovDireciton(), glm::vec3(0.0f, 1.0f, 0.0f)));
     if(m_input->isKeyHeld(GLFW_KEY_SPACE)) m_Position += m_speed * glm::vec3(0.0f, 1.0f, 0.0f);
     if(m_input->isKeyHeld(GLFW_KEY_LEFT_SHIFT)) m_Position -= m_speed * glm::vec3(0.0f, 1.0f, 0.0f);
-
-    std::cout<<m_Position.x<<' '<<m_Position.y<<' '<<m_Position.z<<'\n';
+    if(m_input->isLMBClicked()) {
+        std::cout<<"CALLING DDA"<<std::endl;
+        glm::vec3 block = currentWorld->DDA(m_Position + glm::vec3(0.0f, m_playerHeight, 0.0f), m_camera->getDirection(), 10.0f);
+        if(block.x == FLT_MAX) std::cout<<"Didn't found a block"<<std::endl;
+        else std::cout<<"Found block at : ("<<block.x<<", "<<block.y<<", "<<block.z<<")"<<std::endl;
+    }
 }

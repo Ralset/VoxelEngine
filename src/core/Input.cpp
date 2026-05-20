@@ -5,7 +5,7 @@
 #include <iostream>
 
 Input::Input(const float width, const float height) 
-: m_x(width/2), m_y(height/2), m_previousX(width/2), m_previousY(height/2), m_firstMove(true)
+: m_x(width/2), m_y(height/2), m_previousX(width/2), m_previousY(height/2), m_firstMove(true), m_LMB(false), m_RMB(false), m_previousLMB(false), m_previousRMB(false)
 {
     memset(m_currentKeys, false, 350 * sizeof(bool));
     memset(m_previousKeys, false, 350 * sizeof(bool));
@@ -19,6 +19,9 @@ void Input::update()
 
     m_previousX = m_x;
     m_previousY = m_y;
+
+    m_previousLMB = m_LMB;
+    m_previousRMB = m_RMB;
 }
 
 void Input::onKey(int key, int action)
@@ -40,14 +43,14 @@ void Input::onCursorMove(double xpos, double ypos)
     m_y = ypos;
 }
 
-bool Input::isKeyHeld(int key) const{
-    return m_currentKeys[key] & m_previousKeys[key];
-}
-
-bool Input::isKeyPressed(int key) const{
-    return m_currentKeys[key] & (!m_previousKeys[key]);
-}
-
-bool Input::isKeyReleased(int key) const{
-    return (!m_currentKeys[key]) & m_previousKeys[key];
+void Input::onMouseButtonClick(int button, int action)
+{
+    if(action == GLFW_PRESS){
+        if(button == GLFW_MOUSE_BUTTON_LEFT) m_LMB = true;
+        else if(button == GLFW_MOUSE_BUTTON_RIGHT) m_RMB = true;
+    }
+    else if(action == GLFW_RELEASE){
+        if(button == GLFW_MOUSE_BUTTON_LEFT) m_LMB = false;
+        else if(button == GLFW_MOUSE_BUTTON_RIGHT) m_RMB = false;
+    }
 }

@@ -17,7 +17,7 @@ Application::Application() {
     glfwSetFramebufferSizeCallback(m_window->getWindow(), resizeCallBack);
     glfwSetKeyCallback(m_window->getWindow(), keyCallBack);
     glfwSetCursorPosCallback(m_window->getWindow(), cursorPosCallback);
-    glfwSetInputMode(m_window->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetMouseButtonCallback(m_window->getWindow(), mouseButtonCallback);
 }
 
 Application::~Application() {
@@ -35,6 +35,10 @@ void Application::keyCallBack(GLFWwindow* window, int key, int scancode, int act
 void Application::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
     auto* data = static_cast<WindowUserData*>(glfwGetWindowUserPointer(window));
     data->player->onCursorMove(xpos, ypos);
+}
+void Application::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    auto* data = static_cast<WindowUserData*>(glfwGetWindowUserPointer(window));
+    data->player->onMouseButtonClick(button, action);
 }
 
 void Application::Run()
