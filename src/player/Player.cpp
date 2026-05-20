@@ -9,8 +9,8 @@
 
 #include <iostream>
 
-Player::Player(World* world, glm::vec3 startLocation,const float speed, const float width, const float height) 
-: m_Position(startLocation), m_speed(speed)
+Player::Player(World* world, glm::vec3 startLocation, const float playerHeight,const float speed, const float width, const float height) 
+: m_Position(startLocation), m_speed(speed), m_playerHeight(playerHeight)
 {
     currentWorld = world;
     m_input = std::make_unique<Input>(width, height);;

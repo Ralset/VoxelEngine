@@ -43,7 +43,7 @@ void Application::Run()
 
     World world(16);
 
-    Player player(&world, glm::vec3(0.0f, 10.0f, 0.0f), 0.1f, m_window->getWidth(), m_window->getHeight());
+    Player player(&world, glm::vec3(0.0f, 4.0f, 0.0f), 1.8f, 0.1f, m_window->getWidth(), m_window->getHeight());
     m_userData = { this, &player };
     glfwSetWindowUserPointer(m_window->getWindow(), &m_userData);
 
