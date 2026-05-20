@@ -12,6 +12,7 @@ VertexArray::~VertexArray(){
 }
 
 void VertexArray::AddBuffer(VertexBuffer& vbo, VertexBufferLayout& layout){
+    Bind();
     vbo.Bind();
     const auto& elements = layout.GetElements();
     unsigned int offset=0;

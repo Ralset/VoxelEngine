@@ -123,10 +123,12 @@ void Chunk::buildMesh()
         }
     }
 
+    m_VAO->Bind();
     m_VBO = std::make_unique<VertexBuffer>(vertices.data(), vertices.size() * sizeof(float));
     VertexBufferLayout layout;
     layout.Push<float>(3);
     m_VAO->AddBuffer(*m_VBO, layout);
 
     m_EBO = std::make_unique<IndexBuffer>(indices.data(), (unsigned int)(indices.size() * sizeof(unsigned int)), (unsigned int)indices.size());
+    m_EBO->Bind();
 }

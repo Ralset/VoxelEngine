@@ -7,10 +7,10 @@
 
 World::World(unsigned int worldSize)
 {
-    //chunk coordinates ide od -(worldSize+1)/2 do (worldSize+1)/2
     m_worldSize = std::min(maxWorldSize, std::max(1u, worldSize));
-    m_minusAxisBound =  -((int)worldSize+1)/2;
-    m_plusAxisBound =  worldSize/2;
+    m_minusAxisBound = -static_cast<int>(m_worldSize / 2);
+    m_plusAxisBound = m_minusAxisBound + static_cast<int>(m_worldSize) - 1;   
+    std::cout<<m_minusAxisBound<<' '<<m_plusAxisBound<<'\n';
     GenerateChunks();
 }
 
@@ -19,6 +19,15 @@ World::~World(){
         for(int z=0;z<m_worldSize;z++){
             delete m_chunks[x][z];
         }
+    }
+}
+
+void World::Update(){
+    while(!m_dirtyChunks.empty()){
+        std::pair<int,int> xz = m_dirtyChunks.front();
+        m_dirtyChunks.pop();
+        m_chunks[xz.first][xz.second]->buildMesh();
+        //std::cout<<"Updating chunk : ("<<xz.first<<", "<<xz.second<<")"<<std::endl;
     }
 }
 
@@ -39,14 +48,35 @@ void World::GenerateChunks(){
     }
 }
 
+void World::destroyBlock(glm::vec3 startPosition, glm::vec3 direction, const float reach){
+    DDAta data = DDA(startPosition, direction, reach);
+    int chunkX=floor(static_cast<float>(data.currentX)/16) - m_minusAxisBound, chunkZ=floor(static_cast<float>(data.currentZ)/16) - m_minusAxisBound;
+    int inChunkX=((data.currentX%16)+16)%16, inChunkY=data.currentY, inChunkZ=((data.currentZ%16)+16)%16;
+    //std::cout<<"Destroying a block in chunk ("<<chunkX<<", "<<chunkZ<<")"<<std::endl;
+    //std::cout<<"at coords ("<<inChunkX<<", "<<inChunkY<<", "<<inChunkZ<<")"<<std::endl;
+    if(chunkX < 0 || chunkZ < 0 || chunkX >=m_worldSize || chunkZ >= m_worldSize) return;
+    m_chunks[chunkX][chunkZ]->setBlockID(0, inChunkX, inChunkY, inChunkZ);
+    m_dirtyChunks.push({chunkX, chunkZ});
+}
+
+void World::placeBlock(glm::vec3 startPosition, glm::vec3 direction, const float reach){
+    DDAta data = DDA(startPosition, direction, reach);
+    int chunkX=floor(static_cast<float>(data.previousX)/16) - m_minusAxisBound, chunkZ=floor(static_cast<float>(data.previousZ)/16) - m_minusAxisBound;
+    int inChunkX=((data.previousX%16)+16)%16, inChunkY=data.previousY, inChunkZ=((data.previousZ%16)+16)%16;
+    if(chunkX < 0 || chunkZ < 0 || chunkX >=m_worldSize || chunkZ >= m_worldSize) return;
+    m_chunks[chunkX][chunkZ]->setBlockID(1, inChunkX, inChunkY, inChunkZ);
+    m_dirtyChunks.push({chunkX, chunkZ});
+}
+
+
 unsigned int World::getBlock(int x, int y, int z){
-    int chunkX=x/16, chunkZ=z/16;
+    int chunkX=floor(static_cast<float>(x)/16) - m_minusAxisBound, chunkZ=floor(static_cast<float>(z)/16) - m_minusAxisBound;
     int inChunkX=((x%16)+16)%16, inChunkY=y, inChunkZ=((z%16)+16)%16;
+    if(chunkX < 0 || chunkZ < 0 || chunkX >=m_worldSize || chunkZ >= m_worldSize) return 0;
     return m_chunks[chunkX][chunkZ]->getBlockID(inChunkX, inChunkY, inChunkZ);
 }
 
-glm::vec3 World::DDA(glm::vec3 startPosition, glm::vec3 direction, const float reach){
-    std::cout<<"DDA called"<<std::endl;
+DDAta World::DDA(glm::vec3 startPosition, glm::vec3 direction, const float reach) {
     int currX=std::floor(startPosition.x);
     int currY=std::floor(startPosition.y);
     int currZ=std::floor(startPosition.z);
@@ -77,33 +107,45 @@ glm::vec3 World::DDA(glm::vec3 startPosition, glm::vec3 direction, const float r
     else if(direction.z > 0) untilZ = ((currZ + 1.0f) - startPosition.z) * dZ;
     else untilZ = (startPosition.z - currZ) * dZ;
 
-    if(direction.x==0)
-
-    if(getBlock(currX, currY, currZ) != 0)
-        return glm::vec3(currX, currY, currZ);
+    if(getBlock(currX, currY, currZ) != 0){
+        return {
+            false,
+            INT_MAX, INT_MAX, INT_MAX,
+            INT_MAX, INT_MAX, INT_MAX
+        };
+    }
 
     while(std::min({untilX, untilY, untilZ})<=reach){
+        prevX=currX;
+        prevY=currY;
+        prevZ=currZ;
+
         if(untilX <= untilY && untilX <= untilZ){
             if(untilX > reach) break;
-            prevX = currX;
             currX += stepX;
             untilX += dX;
         }
         else if(untilY <= untilZ){
             if(untilY > reach) break;
-            prevY = currY;
             currY += stepY;
             untilY += dY;
         }
         else{
             if(untilZ > reach) break;
-            prevZ = currZ;
             currZ += stepZ;
             untilZ += dZ;
         }
-        if(getBlock(currX, currY, currZ) != 0)
-            return glm::vec3(currX, currY, currZ);
-
+        if(getBlock(currX, currY, currZ) != 0){
+            return {
+                true,
+                currX, currY, currZ,
+                prevX, prevY, prevZ
+            };
+        }
     }
-    return glm::vec3(FLT_MAX, 0.0f, 0.0f);
+    return {
+        false,
+        INT_MAX, INT_MAX, INT_MAX,
+        INT_MAX, INT_MAX, INT_MAX
+    };
 }

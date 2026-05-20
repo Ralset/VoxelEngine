@@ -45,7 +45,7 @@ void Application::Run()
 {
     Renderer renderer;
 
-    World world(16);
+    World world(2);
 
     Player player(&world, glm::vec3(0.0f, 4.0f, 0.0f), 1.8f, 0.1f, m_window->getWidth(), m_window->getHeight());
     m_userData = { this, &player };
@@ -55,6 +55,7 @@ void Application::Run()
     {
         renderer.Clear();
         player.Update();
+        world.Update();
 
         renderer.m_shader->Bind();
         renderer.m_shader->setUniform("u_View", player.getView());

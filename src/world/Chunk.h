@@ -14,15 +14,15 @@ class Chunk{
     public:
         Chunk(int x, int y);
         ~Chunk();
-        void UpdateBlock(int x,int y);
-
-        inline const unsigned int getBlockID(int x,int y,int z) const { return m_blocks[x][y][z]; };
+        void buildMesh();
+        
+        inline void setBlockID(unsigned int blockID, int x, int y, int z) { m_blocks[x][y][z] = blockID; };
+        inline unsigned int getBlockID(int x,int y,int z) const { return m_blocks[x][y][z]; };
         const glm::mat4 getModel() const;
         const VertexArray& getVAO() const;
         const IndexBuffer& getEBO() const;
 
     private:
-        void buildMesh();
         void addFace(std::vector<float>& vertices, std::vector<unsigned int>& indices, float x, float y, float z, int face); 
         unsigned int m_blocks[16][256][16];
         int m_x;

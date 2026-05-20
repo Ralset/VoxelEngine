@@ -34,9 +34,13 @@ void Player::inputUpdate(){
     if(m_input->isKeyHeld(GLFW_KEY_SPACE)) m_Position += m_speed * glm::vec3(0.0f, 1.0f, 0.0f);
     if(m_input->isKeyHeld(GLFW_KEY_LEFT_SHIFT)) m_Position -= m_speed * glm::vec3(0.0f, 1.0f, 0.0f);
     if(m_input->isLMBClicked()) {
-        std::cout<<"CALLING DDA"<<std::endl;
-        glm::vec3 block = currentWorld->DDA(m_Position + glm::vec3(0.0f, m_playerHeight, 0.0f), m_camera->getDirection(), 10.0f);
-        if(block.x == FLT_MAX) std::cout<<"Didn't found a block"<<std::endl;
-        else std::cout<<"Found block at : ("<<block.x<<", "<<block.y<<", "<<block.z<<")"<<std::endl;
+        if(currentWorld->canReachBlock(m_Position + glm::vec3(0.0f, m_playerHeight, 0.0f), m_camera->getDirection(), 10.0f)){
+            currentWorld->destroyBlock(m_Position + glm::vec3(0.0f, m_playerHeight, 0.0f), m_camera->getDirection(), 10.0f);
+        }
+    }
+    if(m_input->isRMBClicked()) {
+        if(currentWorld->canReachBlock(m_Position + glm::vec3(0.0f, m_playerHeight, 0.0f), m_camera->getDirection(), 10.0f)){
+            currentWorld->placeBlock(m_Position + glm::vec3(0.0f, m_playerHeight, 0.0f), m_camera->getDirection(), 10.0f);
+        }
     }
 }
