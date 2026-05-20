@@ -12,6 +12,7 @@ class Renderer{
         ~Renderer();
         void Clear() const;
         void Draw(const VertexArray& vao, const IndexBuffer& ebo) const;
-    private:
         std::unique_ptr<Shader> m_shader;
+    private:
+        
 };

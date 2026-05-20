@@ -1,5 +1,7 @@
 #include "core/Application.h"
 
+#include "graphics/Shader.h"
+
 #include "graphics/GLUtils.h"
 #include "core/Window.h"
 #include "graphics/Renderer.h"
@@ -34,18 +36,28 @@ void Application::cursorPosCallback(GLFWwindow* window, double xpos, double ypos
     data->player->onCursorMove(xpos, ypos);
 }
 
-
 void Application::Run()
 {
     Renderer renderer;
-    Player player(glm::vec3(0.0f, 0.0f, -2.0f), 0.1f, m_window->getWidth(), m_window->getHeight());
+
+    Player player(glm::vec3(0.0f, 5.0f, 0.0f), 0.1f, m_window->getWidth(), m_window->getHeight());
     m_userData = { this, &player };
     glfwSetWindowUserPointer(m_window->getWindow(), &m_userData);
-    
+
+    Chunk chunk(0, 0);
+
     while (!m_window->shouldWindowClose() && !player.isKeyPressed(GLFW_KEY_ESCAPE))
     {
         renderer.Clear();
         player.Update();
+
+        renderer.m_shader->Bind();
+        renderer.m_shader->setUniform("u_Model", glm::mat4(1.0f));
+        renderer.m_shader->setUniform("u_View", player.getView());
+        renderer.m_shader->setUniform("u_Projection", player.getProjection());
+        renderer.m_shader->setUniform("u_Color", glm::vec4(0.1f, 0.3f, 0.8f, 1.0f));
+
+        renderer.Draw(chunk.getVAO(), chunk.getEBO());
 
         m_window->swapBuffers();
         glfwPollEvents();

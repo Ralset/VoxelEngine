@@ -5,6 +5,8 @@
 
 #include "GLFW/glfw3.h"
 
+#include <iostream>
+
 Player::Player(glm::vec3 startLocation,const float speed, const float width, const float height) 
 : m_Position(startLocation), m_speed(speed)
 {
@@ -23,4 +25,5 @@ void Player::Update() {
     if(m_input->isKeyHeld(GLFW_KEY_SPACE)) m_Position += m_speed * glm::vec3(0.0f, 1.0f, 0.0f);
     if(m_input->isKeyHeld(GLFW_KEY_LEFT_SHIFT)) m_Position -= m_speed * glm::vec3(0.0f, 1.0f, 0.0f);
 
+    std::cout<<m_Position.x<<' '<<m_Position.y<<' '<<m_Position.z<<'\n';
 }

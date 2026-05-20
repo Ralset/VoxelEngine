@@ -5,6 +5,8 @@
 #include "graphics/IndexBuffer.h"
 #include "graphics/Shader.h"
 
+#include <iostream>
+
 Renderer::Renderer(){
     m_shader = std::make_unique<Shader>("assets/shaders/Vertex.shader", "assets/shaders/Fragment.shader");
     GLCall(glEnable(GL_DEPTH_TEST));
@@ -16,6 +18,7 @@ Renderer::Renderer(){
 Renderer::~Renderer() = default;
 
 void Renderer::Draw(const VertexArray& vao, const IndexBuffer& ebo) const{
+    std::cout << "Drawing " << ebo.GetCount() << " indices" << std::endl;
     m_shader->Bind();
     vao.Bind();
     ebo.Bind();
