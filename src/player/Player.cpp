@@ -1,5 +1,7 @@
 #include "player/Player.h"
 
+#include "world/World.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -7,9 +9,10 @@
 
 #include <iostream>
 
-Player::Player(glm::vec3 startLocation,const float speed, const float width, const float height) 
+Player::Player(World* world, glm::vec3 startLocation,const float speed, const float width, const float height) 
 : m_Position(startLocation), m_speed(speed)
 {
+    currentWorld = world;
     m_input = std::make_unique<Input>(width, height);;
     m_camera = std::make_unique<Camera>(0.1f, 45.0f, width, height, 0.1f, 100.0f);
 }

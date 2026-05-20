@@ -6,9 +6,11 @@
 #include <glm/glm.hpp>
 #include <memory>
 
+class World;
+
 class Player{
     public:
-        Player(glm::vec3 startLocation, const float speed, const float width, const float height);
+        Player(World* world,glm::vec3 startLocation, const float speed, const float width, const float height);
         void Update();
 
         inline glm::mat4 getView() const { return m_camera->getView(m_Position); };
@@ -23,4 +25,5 @@ class Player{
         glm::vec3 m_Position;
         std::unique_ptr<Camera> m_camera;
         std::unique_ptr<Input> m_input;
+        World* currentWorld;
 };

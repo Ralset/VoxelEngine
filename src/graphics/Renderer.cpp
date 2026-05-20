@@ -18,7 +18,7 @@ Renderer::Renderer(){
 Renderer::~Renderer() = default;
 
 void Renderer::Draw(const VertexArray& vao, const IndexBuffer& ebo) const{
-    std::cout << "Drawing " << ebo.GetCount() << " indices" << std::endl;
+    //std::cout << "Drawing " << ebo.GetCount() << " indices" << std::endl;
     m_shader->Bind();
     vao.Bind();
     ebo.Bind();

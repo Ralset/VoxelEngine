@@ -6,6 +6,7 @@
 #include "core/Window.h"
 #include "graphics/Renderer.h"
 #include "player/Player.h"
+#include "world/World.h"
 #include "world/Chunk.h"
 
 #include <GLFW/glfw3.h>
@@ -40,16 +41,11 @@ void Application::Run()
 {
     Renderer renderer;
 
-    Player player(glm::vec3(0.0f, 5.0f, 0.0f), 0.1f, m_window->getWidth(), m_window->getHeight());
+    World world(16);
+
+    Player player(&world, glm::vec3(0.0f, 10.0f, 0.0f), 0.1f, m_window->getWidth(), m_window->getHeight());
     m_userData = { this, &player };
     glfwSetWindowUserPointer(m_window->getWindow(), &m_userData);
-
-    Chunk chunks[] = {
-        Chunk(0,0),
-        Chunk(-1,0),
-        Chunk(0,-1),
-        Chunk(-1,-1)
-    };
 
     while (!m_window->shouldWindowClose() && !player.isKeyPressed(GLFW_KEY_ESCAPE))
     {
@@ -61,10 +57,10 @@ void Application::Run()
         renderer.m_shader->setUniform("u_Projection", player.getProjection());
         renderer.m_shader->setUniform("u_Color", glm::vec4(0.1f, 0.3f, 0.8f, 1.0f));
 
-        for(int i=0;i<4;i++){
-            renderer.m_shader->setUniform("u_Model", chunks[i].getModel());
-            renderer.Draw(chunks[i].getVAO(), chunks[i].getEBO());
-        }
+        world.forEachChunk([&](const Chunk& chunk){
+            renderer.m_shader->setUniform("u_Model", chunk.getModel());
+            renderer.Draw(chunk.getVAO(), chunk.getEBO());
+        });
 
         m_window->swapBuffers();
         glfwPollEvents();

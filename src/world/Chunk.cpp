@@ -18,7 +18,7 @@ Chunk::Chunk(int x,int z)
         for(int y=0;y<4;y++){
             for(int z=0;z<16;z++){
                 m_blocks[x][y][z]=1;
-            }    
+            }
         }
     }
     buildMesh();
