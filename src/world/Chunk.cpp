@@ -127,8 +127,5 @@ void Chunk::buildMesh()
     layout.Push<float>(3);
     m_VAO->AddBuffer(*m_VBO, layout);
 
-    if(!vertices.empty()) std::runtime_error("Nema vertexa!");
-    if(!indices.empty()) std::runtime_error("Nema indeksa!");
-
     m_EBO = std::make_unique<IndexBuffer>(indices.data(), (unsigned int)(indices.size() * sizeof(unsigned int)), (unsigned int)indices.size());
 }
