@@ -50,20 +50,28 @@ void World::GenerateChunks(){
 
 void World::destroyBlock(glm::vec3 startPosition, glm::vec3 direction, const float reach){
     DDAta data = DDA(startPosition, direction, reach);
+    if (!data.collision) return;
+
     int chunkX=floor(static_cast<float>(data.currentX)/16) - m_minusAxisBound, chunkZ=floor(static_cast<float>(data.currentZ)/16) - m_minusAxisBound;
     int inChunkX=((data.currentX%16)+16)%16, inChunkY=data.currentY, inChunkZ=((data.currentZ%16)+16)%16;
-    //std::cout<<"Destroying a block in chunk ("<<chunkX<<", "<<chunkZ<<")"<<std::endl;
-    //std::cout<<"at coords ("<<inChunkX<<", "<<inChunkY<<", "<<inChunkZ<<")"<<std::endl;
-    if(chunkX < 0 || chunkZ < 0 || chunkX >=m_worldSize || chunkZ >= m_worldSize) return;
+
+    if (chunkX < 0 || chunkZ < 0 || chunkX >= m_worldSize || chunkZ >= m_worldSize) return;
+    if (inChunkY < 0 || inChunkY >= 256) return;
+
     m_chunks[chunkX][chunkZ]->setBlockID(0, inChunkX, inChunkY, inChunkZ);
     m_dirtyChunks.push({chunkX, chunkZ});
 }
 
 void World::placeBlock(glm::vec3 startPosition, glm::vec3 direction, const float reach){
     DDAta data = DDA(startPosition, direction, reach);
+    if (!data.collision) return;
+
     int chunkX=floor(static_cast<float>(data.previousX)/16) - m_minusAxisBound, chunkZ=floor(static_cast<float>(data.previousZ)/16) - m_minusAxisBound;
     int inChunkX=((data.previousX%16)+16)%16, inChunkY=data.previousY, inChunkZ=((data.previousZ%16)+16)%16;
-    if(chunkX < 0 || chunkZ < 0 || chunkX >=m_worldSize || chunkZ >= m_worldSize) return;
+
+    if (chunkX < 0 || chunkZ < 0 || chunkX >= m_worldSize || chunkZ >= m_worldSize) return;
+    if (inChunkY < 0 || inChunkY >= 256) return;
+
     m_chunks[chunkX][chunkZ]->setBlockID(1, inChunkX, inChunkY, inChunkZ);
     m_dirtyChunks.push({chunkX, chunkZ});
 }
